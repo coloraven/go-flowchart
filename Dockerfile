@@ -13,13 +13,14 @@ COPY main.go .
 COPY go.mod .
 
 #增加缺失的包，移除没用的包
-RUN go mod tidy
+RUN go mod init draw \
+    && go mod tidy
 
-RUN go build -ldflags-"-w -s" -o draw .
+RUN go build -ldflags="-w -s" -o draw .
 
 FROM scratch
 
 ADD . /go-flowchart
 COPY --from=builder go/src/go-flowchart/draw /go-flowchart
-
+EXPOSE 80
 ENTRYPOINT  ["./draw"]
